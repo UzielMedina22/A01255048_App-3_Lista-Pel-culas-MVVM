@@ -7,15 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import medina.jonathan.peliculasapp.modelos.Repositorio
-import medina.jonathan.peliculasapp.ui.theme.PeliculasAppTheme
+import medina.jonathan.peliculasapp.modelos.PeliculaRepositorio
 import medina.jonathan.peliculasapp.viewmodels.PeliculaViewModel
 import medina.jonathan.peliculasapp.viewmodels.PeliculaViewModelFactory
 import medina.jonathan.peliculasapp.vistas.PeliculaScreen
@@ -24,7 +19,7 @@ class MainActivity : ComponentActivity() {
     private val TAG = "PELÍCULAS"
 
     private val viewModel: PeliculaViewModel by viewModels {
-        PeliculaViewModelFactory(Repositorio())
+        PeliculaViewModelFactory(PeliculaRepositorio())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

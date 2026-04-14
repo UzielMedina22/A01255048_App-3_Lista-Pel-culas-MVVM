@@ -1,6 +1,6 @@
 package medina.jonathan.peliculasapp.modelos
 
-class Repositorio {
+class PeliculaRepositorio {
     fun getPeliculas(): List<Pelicula> {
         return listOf(
             Pelicula(
