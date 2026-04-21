@@ -17,4 +17,18 @@ class PeliculaViewModel(val repo: PeliculaRepositorio): ViewModel() {
     private fun getPeliculas() {
         _peliculas.value = repo.getPeliculas()
     }
+
+    fun addPelicula(
+        titulo: String,
+        categoria: String,
+        duracion: String,
+        sinopsis: String) {
+        repo.addPelicula(titulo, categoria, duracion, sinopsis)
+        getPeliculas()
+    }
+
+    fun deletePelicula(pelicula: Pelicula) {
+        repo.deletePelicula(pelicula)
+        getPeliculas()
+    }
 }
