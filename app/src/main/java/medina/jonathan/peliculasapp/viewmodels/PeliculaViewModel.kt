@@ -22,8 +22,11 @@ class PeliculaViewModel(val repo: PeliculaRepositorio): ViewModel() {
         titulo: String,
         categoria: String,
         duracion: String,
-        sinopsis: String) {
-        repo.addPelicula(titulo, categoria, duracion, sinopsis)
+        sinopsis: String,
+        imagen: Int,
+        imagenURI: String? = null
+    ) {
+        repo.addPelicula(titulo, categoria, duracion, sinopsis, imagen, imagenURI)
         getPeliculas()
     }
 
