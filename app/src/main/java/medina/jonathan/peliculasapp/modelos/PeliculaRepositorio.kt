@@ -48,7 +48,7 @@ class PeliculaRepositorio {
         duracion: String,
         sinopsis: String,
         imagen: Int,
-        imagenURI: String? = null
+        imagenURI: String?
     ) {
         var id = 0
         for (pelicula in _peliculas) {

@@ -1,6 +1,7 @@
 package medina.jonathan.peliculasapp.vistas
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -85,7 +88,7 @@ fun PeliculaScreen(viewModel: PeliculaViewModel) {
         DialogoAgregarPelicula(
             onDismiss = { mostrarDialogo = false },
             onConfirm = { titulo, categoria, duracion, sinopsis, imagen, imagenURI ->
-                viewModel.addPelicula(titulo, categoria, duracion, sinopsis, imagen)
+                viewModel.addPelicula(titulo, categoria, duracion, sinopsis, imagen, imagenURI)
                 mostrarDialogo = false
             }
         )
@@ -98,17 +101,14 @@ fun PeliculaCard(pelicula: Pelicula, viewModel: PeliculaViewModel) {
     var peliculaAEliminar by remember {mutableStateOf<Pelicula>(pelicula)}
 
     Card(
-        modifier = Modifier.fillMaxSize(),
-        onClick = {
-            mostrarDialogoEliminarPelicula = true
-        }
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             if (pelicula.imagenURI != null) {
                 AsyncImage(
-                    model = URI(pelicula.imagenURI),
+                    model = pelicula.imagenURI,
                     contentDescription = pelicula.titulo,
                     modifier = Modifier.size(180.dp)
                 )
@@ -124,6 +124,14 @@ fun PeliculaCard(pelicula: Pelicula, viewModel: PeliculaViewModel) {
             Text(text = "Categoría: \"${pelicula.categoria}\"")
             Text(text = "Duración: \"${pelicula.duracion}\"")
             Text(text = "Sinopsis: \"${pelicula.sinopsis}\"")
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    mostrarDialogoEliminarPelicula = true
+                }
+            ) {
+                Text("Eliminar")
+            }
         }
 
         if (mostrarDialogoEliminarPelicula) {
@@ -144,6 +152,8 @@ fun DialogoAgregarPelicula(
     onDismiss: () -> Unit,
     onConfirm: (String, String, String, String, Int, String?) -> Unit
 ) {
+    var context = LocalContext.current
+
     var titulo by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("") }
     var duracion by remember { mutableStateOf("") }
@@ -162,9 +172,10 @@ fun DialogoAgregarPelicula(
         title = {Text("Nueva Película")},
         text = {
             Column {
+                Text("Seleccionar imagen")
+                Spacer(modifier = Modifier.height(8.dp))
                 Box(
                    modifier = Modifier
-                       .fillMaxWidth()
                        .size(80.dp)
                        .clickable{
                            launcher.launch("image/*")
@@ -174,18 +185,18 @@ fun DialogoAgregarPelicula(
                         AsyncImage(
                             model = imagenURI,
                             contentDescription = titulo,
-                            modifier = Modifier.size(48.dp),
+                            modifier = Modifier.size(80.dp),
                             contentScale = ContentScale.Crop
                         )
                     } else {
-                        Text("Seleccionar imagen")
                         Icon(
                             imageVector = Icons.Default.AddCircle,
                             contentDescription = "Imagen",
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(80.dp)
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = titulo,
                     onValueChange = {titulo = it},
@@ -225,6 +236,12 @@ fun DialogoAgregarPelicula(
                     if (titulo.isNotBlank() && categoria.isNotBlank() && duracion.isNotBlank() &&
                         sinopsis.isNotBlank()) {
                         onConfirm(titulo, categoria, duracion, sinopsis, imagen, imagenURI.toString())
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Falta llenar uno o más campos.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             ) {
@@ -259,7 +276,7 @@ fun DialogoEliminarPelicula(
                     onConfirm(pelicula)
                 }
             ) {
-                Text("Agregar")
+                Text("Eliminar")
             }
         },
         dismissButton = {
